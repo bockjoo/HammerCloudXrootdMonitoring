@@ -79,6 +79,6 @@ for workflow in $workflows ; do
    done
 done
 
-echo rm -f $(basename $0 | sed "s#\.sh##").*.out
+rm -f $(basename $0 | sed "s#\.sh##").*.out
 
 exit 0
