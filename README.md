@@ -8,7 +8,7 @@ other sites as well.
  
  cd HammerCloudXrootdMonitoring/
  
- sed -e "s#@@workdir@@#$(pwd)#" -e "s#@@@@notifytowhom@@#your@email.address#" -e "s#@@thesite@@#T2_US_Florida#" ftl_check_hc_xrootd_cron.sh.in > ftl_check_hc_xrootd_cron.sh
+ sed -e "s#@@workdir@@#$(pwd)#" -e "s#@@notifytowhom@@#your@email.address#" -e "s#@@thesite@@#T2_US_Florida#" ftl_check_hc_xrootd_cron.sh.in > ftl_check_hc_xrootd_cron.sh
  
  chmod a+x ftl_check_hc_xrootd_cron.sh
  
