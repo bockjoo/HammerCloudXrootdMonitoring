@@ -1,0 +1,2 @@
+{"_comment": "DBID=9236", "search_type": "query_then_fetch", "index": ["monit_prod_condor_raw_overview_*"], "ignore_unavailable": true}
+{"query": {"bool": {"filter": [{"range": {"metadata.timestamp": {"gte": "now-2d/d", "lte": "now", "format": "epoch_millis"}}}, {"query_string": {"analyze_wildcard": true, "query": "data.CRAB_UserHN:/sciaba/ AND data.Site:* AND data.Status:Completed AND _exists_:data.CRAB_Id AND data.CRAB_Workflow:/.*.AnySite.*.@@thesite@@/"}}]}}, "from": 0, "size": 1}

@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# License : Bockjoo Kim
+#
+# See README.md
+#
+
+# Configuration
+#                                # Example
+workdir=@@workdir@@              # $HOME/T2/ops/ftools/ftool-check-hammercloud
+notifytowhom=@@notifytowhom@@    # somebody@if.somewhere.edu
+thesite=@@thesite@@              # T2_US_Florida
+# Configuration
+
+if [ -d $workdir ] ; then
+   echo ERROR $0 is not configured correctly. configure this script for the shell variables in the Configuration section
+   exit 1
+fi
+
+if [ -s token.txt ] ; then
+   echo ERROR token.txt for the Grafana DB access is empty. Get it from /afs/cern.ch/user/l/leggerf/cms/token.txt or request it to the CMS Monitoring
+   exit 1
+fi
+
+grafana_detail="https://monit-grafana.cern.ch/d/cmsTMGlobal/cms-tasks-monitoring-globalview?orgId=11&var-current_url=/d/cmsTMDetail/cms_task_monitoring&var-site=All&var-task=.*-AnySite-.*-${thesite}&var-user=sciaba"
+
+if [ $# -gt 0 ] ; then
+   thesite=$1
+fi
+
+:
+: Check starts here
+:
+echo INFO running the check for $thesite
+
+date1=$(date --date="1 day ago" +%Y-%m-%d+%H:%M) # Unused
+date2=$(date +%Y-%m-%d+%H:%M)                    # Unused
+success_rate=$(./ftl_check_hc_xrootd.sh $thesite | grep success | head -1 | cut -d= -f4)
+success_percentage=$(echo "scale=2; $success_rate * 100" |bc | cut -d. -f1)
+if [ "x$success_percentage" == "x" ] ; then
+   printf "ERROR $(basename $0) $(date) Failed to get success rate\nsuccess_rate=$success_rate\nsuccess_percentage=$success_percentage\nExecuting ./ftl_check_hc_xrootd.sh\n$(./ftl_check_hc_xrootd.sh)\n" | mail -s "ERROR $(basename $0) Failed to get Success Rate" $notifytowhom
+   exit 1
+fi
+
+printf "INFO $(basename $0) $(/bin/hostname -f)\nINFO overall hcxrootd success at $thesite = $success_percentage (%%) \nCheck also $grafana_detail\n$(./ftl_scroll_monit_prod_condor_raw_overview.sh)\n" | mail -s "INFO $(basename $0) hcxrootd = $success_percentage (%)" $notifytowhom
+
+exit 0
