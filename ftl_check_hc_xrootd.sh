@@ -16,6 +16,7 @@ for task in $tasks ; do
   sum_exit_0=0
   sum_exit_not_0=0
   for keycount in $keyscounts ; do
+      echo $keycount | grep -q key\": || continue
       key=$(echo $keycount | cut -d: -f2 | cut -d, -f1)
       count=$(echo $keycount | cut -d: -f3)
       if [ $key -eq 0 ] ; then
