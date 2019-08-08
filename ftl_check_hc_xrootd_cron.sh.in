@@ -12,7 +12,7 @@ notifytowhom=@@notifytowhom@@    # somebody@if.somewhere.edu
 thesite=@@thesite@@              # T2_US_Florida
 # Configuration
 
-if [ -d $workdir ] ; then
+if [ ! -d $workdir ] ; then
    echo ERROR $0 is not configured correctly. configure this script for the shell variables in the Configuration section
    exit 1
 fi
