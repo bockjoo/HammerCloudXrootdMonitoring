@@ -38,10 +38,10 @@ date2=$(date +%Y-%m-%d+%H:%M)                    # Unused
 success_rate=$(./ftl_check_hc_xrootd.sh $thesite | grep success | head -1 | cut -d= -f4)
 success_percentage=$(echo "scale=2; $success_rate * 100" |bc | cut -d. -f1)
 if [ "x$success_percentage" == "x" ] ; then
-   printf "ERROR $(basename $0) $(date) Failed to get success rate\nsuccess_rate=$success_rate\nsuccess_percentage=$success_percentage\nExecuting ./ftl_check_hc_xrootd.sh\n$(./ftl_check_hc_xrootd.sh)\n" | mail -s "ERROR $(basename $0) Failed to get Success Rate" $notifytowhom
+   printf "ERROR $(basename $0) $(date) Failed to get success rate\nsuccess_rate=$success_rate\nsuccess_percentage=$success_percentage\nExecuting ./ftl_check_hc_xrootd.sh $thesite\n$(./ftl_check_hc_xrootd.sh $thesite)\n" | mail -s "ERROR $(basename $0) Failed to get Success Rate" $notifytowhom
    exit 1
 fi
 
-printf "INFO $(basename $0) $(/bin/hostname -f)\nINFO overall hcxrootd success at $thesite = $success_percentage (%%) \nCheck also $grafana_detail\n$(./ftl_scroll_monit_prod_condor_raw_overview.sh)\n" | mail -s "INFO $(basename $0) hcxrootd = $success_percentage (%)" $notifytowhom
+printf "INFO $(basename $0) $(/bin/hostname -f)\nINFO overall hcxrootd success at $thesite = $success_percentage (%%) \nCheck also $grafana_detail\n$(./ftl_scroll_monit_prod_condor_raw_overview.sh $thesite)\n" | mail -s "INFO $(basename $0) hcxrootd = $success_percentage (%)" $notifytowhom
 
 exit 0
