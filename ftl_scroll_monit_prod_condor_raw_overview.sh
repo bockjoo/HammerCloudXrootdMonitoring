@@ -46,6 +46,7 @@ done
 # All lines with Site ExitCode CRAB_Workflow CRAB_JobLogURL
 output=$(sed 's#"data":#\n"data":#g' $(basename $0 | sed "s#\.sh##").*.out| sed 's#,"#,\n"#g' | sed 's#"Site":#\n"Site":#g' | sed 's#"ExitCode":#\n"ExitCode":#g' | sed 's#"Status":#\n"Status":#g' | sed 's#"CRAB_Workflow":#\n"CRAB_Workflow":#g' | sed 's#"CRAB_JobLogURL"#\n"CRAB_JobLogURL"#g' | sed 's#"CRAB_PostJobLogURL"#\n"CRAB_PostJobLogURL"#g' | grep "^\"Site\"\|^\"ExitCode\"\|\"CRAB_Workflow\"\|\"CRAB_JobLogURL\"" | while read line1 ; do read line2 ; read line3 ; read line4 ; echo $line1 $line2 $line3 $line4 | sed 's# ##g'; done)
 workflows=$(printf "$output\n" | sed 's#,#\n#g' | grep CRAB_Workflow | cut -d\" -f4 | sort -u)
+thelink=""
 for workflow in $workflows ; do
    completed=$(printf "$output\n" | grep $workflow | wc -l)
    sites=$(printf "$output\n" | grep $workflow | sed 's#,#\n#g' | grep \"Site\" | cut -d\" -f4 | sort -u)
@@ -57,27 +58,34 @@ for workflow in $workflows ; do
    done
    echo $(echo $workflow | cut -d: -f1) completed=$completed sum=$sum
    for s in $sites ; do
+      thelink="$thelink &nbsp; $s("
       count=$(printf "$output\n" | grep $workflow | sed 's#,#\n#g' | grep :\"$s\" | wc -l)
       exitcodes=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | sed 's#,#\n#g' | grep "\"ExitCode\":" | cut -d: -f2 | sort -u)
       sumc=0
+      CRAB_JobLogURLs_Link=""
       for exitcode in $exitcodes ; do
           c=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | grep "\"ExitCode\":${exitcode}," | wc -l)
           #echo "        " Site=$s ExitCode"(=$exitcode)": $c
           sumc=$(expr $sumc + $c)
           if [ $exitcode -eq 0 ] ; then
              echo "        " Site=$s ExitCode"(=$exitcode)"
+             CRAB_JobLogURLs_Link="$CRAB_JobLogURLs_Link 0"
           else
              CRAB_JobLogURLs=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | grep "\"ExitCode\":${exitcode}," | sed 's#,#\n#g' | grep "\"CRAB_JobLogURL\":" | cut -d\" -f4)
              echo "        " Site=$s ExitCode"(=$exitcode)" CRAB_JobLogURLs
              for url in $CRAB_JobLogURLs ; do
                 echo "           " $url
+                CRAB_JobLogURLs_Link="$CRAB_JobLogURLs_Link <a href='$url' target=_blank>$exitcode</a>"
              done
              
           fi
+          thelink="$thelink ExitCode= $CRAB_JobLogURLs_Link"
       done
       #echo "   " Site=$s SiteCount=$count ExitCodeCount=$sumc
+      thelink="${thelink})"
    done
 done
+[ $# -gt 1 ] && echo HC_Jobs_Failed_From="${thelink}"
 
 rm -f $(basename $0 | sed "s#\.sh##").*.out
 
