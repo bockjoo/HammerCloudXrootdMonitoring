@@ -82,7 +82,11 @@ for workflow in $workflows ; do
           thelink="$thelink ExitCode= $CRAB_JobLogURLs_Link"
       done
       #echo "   " Site=$s SiteCount=$count ExitCodeCount=$sumc
-      thelink="${thelink})"
+      if [ $(echo $thelink | sed 's#T[0-9]_#\nT9_#g' | grep ^T | wc -l) -eq 4 ] ; then
+         thelink=" <br> ${thelink})"
+      else
+         thelink="${thelink})"
+      fi
    done
 done
 [ $# -gt 1 ] && echo HC_Jobs_Failed_From="${thelink}"
