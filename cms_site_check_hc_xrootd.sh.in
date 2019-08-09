@@ -30,7 +30,7 @@ echo "<html>" > ${cms_site_check_hc_xrootd_page}.0
 echo "<table>" >> ${cms_site_check_hc_xrootd_page}.0
 echo "<H1><FONT size=+2 color='orange'> HammerCloud Test Results : Sites are where xrootd input is </FONT></H1>" >> ${cms_site_check_hc_xrootd_page}.0
 #echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
-echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td><td bgcolor='whilte'>HC Jobs Failed From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td><td bgcolor='yellow'>HC Jobs Failed From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
 
 for thesite in $sites ; do
     #echo INFO doing site $thesite
@@ -50,7 +50,7 @@ for thesite in $sites ; do
     #eval $(./ftl_scroll_monit_prod_condor_raw_overview.sh $thesite 1 | grep HC_Jobs_Failed_From=)
     HC_Jobs_Failed_From=$(./ftl_scroll_monit_prod_condor_raw_overview.sh $thesite 1 | grep HC_Jobs_Failed_From= | cut -d= -f2-)
     #echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
-    echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> <td bgcolor='whilte'>$HC_Jobs_Failed_From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+    echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> <td bgcolor='yellow'>$HC_Jobs_Failed_From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
     #./ftl_check_hc_xrootd.sh $thesite
     #read ans
 done
