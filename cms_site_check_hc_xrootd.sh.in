@@ -45,10 +45,10 @@ for thesite in $sites ; do
     bgcolor=cyan
     [ $success_percentage -lt 70 ] && [ $success_percentage -gt 30 ] && bgcolor=orange
     [ $success_percentage -le 30 ] && bgcolor=magenta
-    echo "site = $thesite bgcolor = $bgcolor success_rate = $success_rate "
     grafana_detail_site=$(echo $grafana_detail | sed "s#T2_US_Florida#$site#")
     #eval $(./ftl_scroll_monit_prod_condor_raw_overview.sh $thesite 1 | grep HC_Jobs_Failed_From=)
     HC_Jobs_Failed_From=$(./ftl_scroll_monit_prod_condor_raw_overview.sh $thesite 1 | grep HC_Jobs_Failed_From= | cut -d= -f2-)
+    echo "site = $thesite bgcolor = $bgcolor success_rate = $success_rate " HC_Jobs_Failed_From=$(echo HC_Jobs_Failed_From | cut -c1-12)...
     #echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
     echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> <td bgcolor='yellow'>$HC_Jobs_Failed_From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
     #./ftl_check_hc_xrootd.sh $thesite
