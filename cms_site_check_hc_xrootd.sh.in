@@ -24,7 +24,7 @@ fi
 
 cms_site_check_hc_xrootd_page=$HOME/services/external/apache2/htdocs/T2/ops/cms_site_check_hc_xrootd.html
 [ -d $(dirname $cms_site_check_hc_xrootd_page) ] || cms_site_check_hc_xrootd_page=$workdir
-sites=$(ls /cvmfs/cms.cern.ch/SITECONF/ | grep T2_)
+sites=$(ls /cvmfs/cms.cern.ch/SITECONF/ | grep T[1-2]_)
 
 echo "<html>" > ${cms_site_check_hc_xrootd_page}.0
 echo "<table>" >> ${cms_site_check_hc_xrootd_page}.0
