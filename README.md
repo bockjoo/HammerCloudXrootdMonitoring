@@ -8,8 +8,20 @@ other sites as well.
  
  cd HammerCloudXrootdMonitoring/
  
- sed -e "s#@@workdir@@#$(pwd)#" -e "s#@@notifytowhom@@#your@email.address#" -e "s#@@thesite@@#T2_US_Florida#" ftl_check_hc_xrootd_cron.sh.in > ftl_check_hc_xrootd_cron.sh
+ sed -e "s#@@workdir@@#$(pwd)#" -e "s#@@notifytowhom@@#your@email.address#" -e "s#@@thesite@@#T2_XX_YYYYYYY#" ftl_check_hc_xrootd_cron.sh.in > ftl_check_hc_xrootd_cron.sh
  
  chmod a+x ftl_check_hc_xrootd_cron.sh
  
  ./ftl_check_hc_xrootd_cron.sh
+
+## How to create a web page that shows result of all T2 sites
+ git clone https://github.com/bockjoo/HammerCloudXrootdMonitoring.git
+
+ cd HammerCloudXrootdMonitoring/
+
+ sed -e "s#@@workdir@@#$(pwd)#" -e "s#@@notifytowhom@@#your@email.address#" -e "s#@@thesite@@#T2_XX_YYYYYYY#" cms_site_check_hc_xrootd.sh.in > cms_site_check_hc_xrootd.sh
+
+ chmod a+x cms_site_check_hc_xrootd.sh
+
+./cms_site_check_hc_xrootd.sh
+
