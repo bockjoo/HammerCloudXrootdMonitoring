@@ -43,7 +43,11 @@ for task in $tasks ; do
   fi  
 done
 sum=$(expr $sum_not_0 + $sum_0)
-success_rate=$(echo "scale=2 ; $sum_0 / $sum " | bc)
+if [ $sum -eq 0 ] ; then
+   success_rate=-1.00
+else
+   success_rate=$(echo "scale=2 ; $sum_0 / $sum " | bc)
+fi
 echo alltasks sum_completed=$sum_completed sum=$sum success=$success_rate
 exit 0
 
