@@ -8,7 +8,8 @@ query_json=es.q.match_hc_xrootd.json
 sed -e "s#@@thesite@@#$thesite#" ${query_json}.in > $query_json
 eval $(sed 's#"DBID=#\n"DBID=#' es.q.match_hc_xrootd.json | grep ^\"DBID= | cut -d\" -f2)
 
-output=$(curl -H "Content-Type: application/x-ndjson" -H "Authorization: Bearer $(cat token.txt)" -XGET https://monit-grafana.cern.ch/api/datasources/proxy/${DBID}/_msearch --data-binary "@${query_json}" 2>/dev/null | sed 's#}\]}},{"key":"#\n#g' | grep ${thesite}\")
+#output=$(curl -H "Content-Type: application/x-ndjson" -H "Authorization: Bearer $(cat token.txt)" -XGET https://monit-grafana.cern.ch/api/datasources/proxy/${DBID}/_msearch --data-binary "@${query_json}" 2>/dev/null | sed 's#}\]}},{"key":"#\n#g' | grep ${thesite}\")
+output=$(curl -H "Content-Type: application/x-ndjson" -H "Authorization: Bearer $(cat token.txt)" -XGET https://monit-grafana.cern.ch/api/datasources/proxy/${DBID}/_msearch --data-binary "@${query_json}" 2>/dev/null | sed 's#"CRAB_Workflow"#\n"CRAB_Workflow"#' | sed 's#}\]}},{"key":"#\n#g' | sed 's#"key":"#\n#' | grep ${thesite}\")
 
 tasks=$(printf "$output\n" | cut -d\" -f1)
 for task in $tasks ; do
