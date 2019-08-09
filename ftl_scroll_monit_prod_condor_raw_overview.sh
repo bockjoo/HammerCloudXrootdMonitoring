@@ -48,6 +48,11 @@ output=$(sed 's#"data":#\n"data":#g' $(basename $0 | sed "s#\.sh##").*.out| sed 
 workflows=$(printf "$output\n" | sed 's#,#\n#g' | grep CRAB_Workflow | cut -d\" -f4 | sort -u)
 thelink=""
 for workflow in $workflows ; do
+   if [ "x$thelink" == "x" ] ; then
+     thelink="CRAB_Workflow:$workflow"
+   else
+     thelink="$thelink <br> CRAB_Workflow:$workflow <br>"
+   fi
    completed=$(printf "$output\n" | grep $workflow | wc -l)
    sites=$(printf "$output\n" | grep $workflow | sed 's#,#\n#g' | grep \"Site\" | cut -d\" -f4 | sort -u)
    sum=0
@@ -60,9 +65,9 @@ for workflow in $workflows ; do
    for s in $sites ; do
       #thelink="$thelink &nbsp; $s("
       if [ $(expr $(echo $thelink | sed 's#\[T#\n\[T#g' | grep "^\\[T" | wc -l) % 4) -eq 0 ] ; then
-         sitelink="&nbsp; <br>[$s]("
+         sitelink="<br>&nbsp;&nbsp;[$s]("
       else
-         sitelink="&nbsp; [$s]("
+         sitelink="&nbsp;&nbsp;[$s]("
       fi
       count=$(printf "$output\n" | grep $workflow | sed 's#,#\n#g' | grep :\"$s\" | wc -l)
       exitcodes=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | sed 's#,#\n#g' | grep "\"ExitCode\":" | cut -d: -f2 | sort -u)
