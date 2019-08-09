@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# License : Bockjoo Kim
+#
+# See README.md
+#
+
+# Configuration
+#                                # Example
+workdir=@@workdir@@              # $HOME/T2/ops/ftools/ftool-check-hammercloud
+notifytowhom=@@notifytowhom@@    # somebody@if.somewhere.edu
+thesite=@@thesite@@              # T2_US_Florida
+# Configuration
+
+if [ ! -d $workdir ] ; then
+   echo ERROR $0 is not configured correctly. configure this script for the shell variables in the Configuration section
+   exit 1
+fi
+
+if [ ! -s token.txt ] ; then
+   echo ERROR token.txt for the Grafana DB access is empty. Get it from /afs/cern.ch/user/l/leggerf/cms/token.txt or request it to the CMS Monitoring
+   exit 1
+fi
+
+cms_site_check_hc_xrootd_page=$HOME/services/external/apache2/htdocs/T2/ops/cms_site_check_hc_xrootd.html
+[ -d $(dirname $cms_site_check_hc_xrootd_page) ] || cms_site_check_hc_xrootd_page=$workdir
+sites=$(ls /cvmfs/cms.cern.ch/SITECONF/ | grep T2_)
+
+echo "<html>" > ${cms_site_check_hc_xrootd_page}.0
+echo "<table>" >> ${cms_site_check_hc_xrootd_page}.0
+echo "<H1><FONT size=+2 color='orange'> HammerCloud Test Results : Sites are where xrootd input is </FONT></H1>" >> ${cms_site_check_hc_xrootd_page}.0
+echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='grey'>Success Rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+
+for thesite in $sites ; do
+    #echo INFO doing site $thesite
+    grafana_detail="https://monit-grafana.cern.ch/d/cmsTMGlobal/cms-tasks-monitoring-globalview?orgId=11&var-current_url=/d/cmsTMDetail/cms_task_monitoring&var-site=All&var-task=.*-AnySite-.*-${thesite}&var-user=sciaba"
+    echo INFO running the check for $thesite
+    success_rate=$(./ftl_check_hc_xrootd.sh $thesite | grep success | head -1 | cut -d= -f4)
+    if [ "x$success_rate" == "x" ] ; then
+       success_rate=-1.0
+    fi
+    success_percentage=$(echo "scale=2; $success_rate * 100" |bc | cut -d. -f1)
+    bgcolor=green
+    [ $success_percentage -lt 70 ] && [ $success_percentage -gt 30 ] && bgcolor=orange
+    [ $success_percentage -le 30 ] && bgcolor=red
+    echo "site = $thesite bgcolor = $bgcolor success_rate = $success_rate "
+    echo "<tr><td bgcolor='yellow'>$thesite</td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+    #./ftl_check_hc_xrootd.sh $thesite
+    #read ans
+done
+echo "</table></html>" >> ${cms_site_check_hc_xrootd_page}.0
+
+cp ${cms_site_check_hc_xrootd_page}.0 ${cms_site_check_hc_xrootd_page}
+if [ -d $(dirname $cms_site_check_hc_xrootd_page) ] ; then
+   echo INFO script Done check http://oo.ihepa.ufl.edu:8080/T2/ops/$(basename ${cms_site_check_hc_xrootd_page})
+else
+   echo INFO script Done check $cms_site_check_hc_xrootd_page
+fi
+
+exit 0
+
