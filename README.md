@@ -25,3 +25,4 @@ other sites as well.
 
 ./cms_site_check_hc_xrootd.sh
 
+Example link : http://oo.ihepa.ufl.edu:8080/T2/ops/cms_site_check_hc_xrootd.html
