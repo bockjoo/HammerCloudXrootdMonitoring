@@ -29,7 +29,8 @@ sites=$(ls /cvmfs/cms.cern.ch/SITECONF/ | grep T[1-2]_)
 echo "<html>" > ${cms_site_check_hc_xrootd_page}.0
 echo "<table>" >> ${cms_site_check_hc_xrootd_page}.0
 echo "<H1><FONT size=+2 color='orange'> HammerCloud Test Results : Sites are where xrootd input is </FONT></H1>" >> ${cms_site_check_hc_xrootd_page}.0
-echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+#echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+echo "<tr><td bgcolor='yellow'>Site</td><td bgcolor='orange'>Success Rate</td><td bgcolor='whilte'>HC Jobs Failed From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
 
 for thesite in $sites ; do
     #echo INFO doing site $thesite
@@ -45,7 +46,8 @@ for thesite in $sites ; do
     [ $success_percentage -le 30 ] && bgcolor=magenta
     echo "site = $thesite bgcolor = $bgcolor success_rate = $success_rate "
     grafana_detail_site=$(echo $grafana_detail | sed "s#T2_US_Florida#$site#")
-    echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+    #echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+    echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> <td bgcolor='whilte'>$HC_Jobs_Failed_From</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
     #./ftl_check_hc_xrootd.sh $thesite
     #read ans
 done
