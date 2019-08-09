@@ -60,14 +60,14 @@ for workflow in $workflows ; do
    for s in $sites ; do
       #thelink="$thelink &nbsp; $s("
       if [ $(expr $(echo $thelink | sed 's#\[T#\n\[T#g' | grep "^\\[T" | wc -l) % 4) -eq 0 ] ; then
-         thelink="$thelink &nbsp; <br>[$s]("
+         sitelink="&nbsp; <br>[$s]("
       else
-         thelink="$thelink &nbsp; [$s]("
+         sitelink="&nbsp; [$s]("
       fi
       count=$(printf "$output\n" | grep $workflow | sed 's#,#\n#g' | grep :\"$s\" | wc -l)
       exitcodes=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | sed 's#,#\n#g' | grep "\"ExitCode\":" | cut -d: -f2 | sort -u)
       sumc=0
-      thelink="$thelink ExitCode= "
+      #thelink="$thelink ExitCode= "
       CRAB_JobLogURLs_Link=""
       for exitcode in $exitcodes ; do
           c=$(printf "$output\n" | grep $workflow | grep ":\"$s\"" | grep "\"ExitCode\":${exitcode}," | wc -l)
@@ -86,7 +86,9 @@ for workflow in $workflows ; do
              
           fi
       done
-      thelink="$thelink $CRAB_JobLogURLs_Link)"
+      if [ $(for e in $exitcodes ; do echo $e ; done | grep -v ^0$ | wc -l) -gt 0 ] ; then
+         thelink="$thelink $sitelink ExitCodes=($CRAB_JobLogURLs_Link)"
+      fi
       #echo "   " Site=$s SiteCount=$count ExitCodeCount=$sumc
       #if [ $(echo $thelink | sed 's#T[0-9]_#\nT9_#g' | grep ^T | wc -l) -eq 4 ] ; then
       #   thelink=" <br> ${thelink})"
