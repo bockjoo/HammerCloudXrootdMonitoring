@@ -44,7 +44,8 @@ for thesite in $sites ; do
     [ $success_percentage -lt 70 ] && [ $success_percentage -gt 30 ] && bgcolor=orange
     [ $success_percentage -le 30 ] && bgcolor=magenta
     echo "site = $thesite bgcolor = $bgcolor success_rate = $success_rate "
-    echo "<tr><td bgcolor='yellow'>$thesite</td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
+    grafana_detail_site=$(echo $grafana_detail | sed "s#T2_US_Florida#$site#")
+    echo "<tr><td bgcolor='yellow'><a href='$grafana_detail_site' target=_blank>$thesite</a></td><td bgcolor='$bgcolor'>$success_rate</td> </tr>" >> ${cms_site_check_hc_xrootd_page}.0
     #./ftl_check_hc_xrootd.sh $thesite
     #read ans
 done
