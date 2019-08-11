@@ -36,7 +36,7 @@ for i in $(seq 0 $nsearch) ; do
       curl -H "Content-Type: application/x-ndjson" -H "Authorization: Bearer $(cat token.txt)" -XGET https://monit-grafana.cern.ch/api/datasources/proxy/${DBID}/_msearch --data-binary "@${sort_search_json}" 2>/dev/null 1> $(basename $0 | sed "s#\.sh##").$i.out
       search_after=$(sed 's#sort":#\nsort":#g' $(basename $0 | sed "s#\.sh##").$i.out | grep ^sort | tail -1 | cut -d\[ -f2- | cut -d\] -f1)
    else
-      sed -e "s#@@thesite@@#$thesite#" -e "s#@@size@@#$size#" -e "s#@@search_after@@#$search_after#" -e "s#@@unique_f@@#$unique_f#" -e "s#@@tie_breakter_id@@#$tie_breaker_id#" ${sort_search_search_json}.in > ${sort_search_after_json}
+      sed -e "s#@@thesite@@#$thesite#" -e "s#@@size@@#$size#" -e "s|@@search_after@@|$search_after|" -e "s#@@unique_f@@#$unique_f#" -e "s#@@tie_breakter_id@@#$tie_breaker_id#" ${sort_search_search_json}.in > ${sort_search_after_json}
       curl -H "Content-Type: application/x-ndjson" -H "Authorization: Bearer $(cat token.txt)" -XGET https://monit-grafana.cern.ch/api/datasources/proxy/${DBID}/_msearch --data-binary "@${sort_search_after_json}" 2>/dev/null 1> $(basename $0 | sed "s#\.sh##").$i.out
       search_after=$(sed 's#sort":#\nsort":#g' $(basename $0 | sed "s#\.sh##").$i.out | grep ^sort | tail -1 | cut -d\[ -f2- | cut -d\] -f1) # "cmsgwms-submit5.fnal.gov#141210.58#1556679777",1556693872000
       #gzip -c $(basename $0 | sed "s#\.sh##").$i.out > $(basename $0 | sed "s#\.sh##").$i.out.gz
